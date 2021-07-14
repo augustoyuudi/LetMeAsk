@@ -1,8 +1,7 @@
-import { Button } from "./Button";
 
 function App() {
   return (
-    <Button text={1} />
+    <h1>ola mundo</h1>
   );
 }
 
