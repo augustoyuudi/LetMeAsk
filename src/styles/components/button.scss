@@ -1,0 +1,22 @@
+$purple: #835AFD;
+
+.button {
+  border: none;
+  border-radius: 8px;
+  height: 50px;
+  padding: 8px;
+  margin-top: 16px;
+  width: 100%;
+  background-color: $purple;
+  color: #FFF;
+  cursor: pointer;
+
+  &:not(:disabled):hover {
+    filter: brightness(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
