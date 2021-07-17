@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import illustrationImg from "../assets/illustration.svg";
 import letMeAskLogo from "../assets/logo.svg";
-import "../styles/pages/auth.scss";
 import { Button } from "../components/Button";
+import { useAuth } from '../hooks/useAuth';
+import "../styles/pages/auth.scss";
 
 export function NewRoom() {
+  const { user } = useAuth();
+
   return (
     <div id="page-auth">
       <aside>
@@ -17,6 +20,7 @@ export function NewRoom() {
         <div className="main-content">
           <img src={letMeAskLogo} alt="Logotipo do LetMeAsk" />
 
+          <h1>{user?.displayName}</h1>
           <h2>Crie uma nova sala</h2>
 
           <form action="post">
