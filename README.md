@@ -2,6 +2,7 @@
 
 ## Tech stack
 - React.js
+- Typescript
 - SASS
 - Firebase
 
