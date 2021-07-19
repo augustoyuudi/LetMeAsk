@@ -5,11 +5,19 @@ $purple: #835AFD;
   border-radius: 8px;
   height: 50px;
   padding: 8px;
-  margin-top: 16px;
-  width: 100%;
   background-color: $purple;
   color: #FFF;
   cursor: pointer;
+
+  img {
+    margin-right: 8px;
+  }
+
+  &.outlined {
+    background: #FFF;
+    border: 1px solid #835afd;
+    color: #835afd;
+  }
 
   &:not(:disabled):hover {
     filter: brightness(0.9);
