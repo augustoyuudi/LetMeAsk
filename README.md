@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# Projeto de React.js com aulas disponibilizado pela Rocketseat.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Tech stack
+- React.js
+- SASS
+- Firebase
+
+<br />
+
+## UI
+https://www.figma.com/file/DCC27GDOwDYGTy3KCpzXm4/Letmeask-(Copy)?node-id=0%3A1
+
+<br />
 
 ## Available Scripts
 
