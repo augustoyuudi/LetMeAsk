@@ -1,71 +1,23 @@
+import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
 import logo from "../assets/logo.svg";
 import { Button } from "../components/Button";
+import { Question } from "../components/Question";
 import { RoomCode } from "../components/RoomCode";
 import { useAuth } from "../hooks/useAuth";
-import "../styles/pages/room.scss";
+import { useRoom } from "../hooks/useRoom";
 import { database } from "../services/firebase";
+import "../styles/pages/room.scss";
 
 type RoomRouteParams = {
   id: string;
 }
 
-type FirebaseQuestions = Record<string, {
-  author: {
-    name: string;
-    avatar: string;
-  }
-  content: string;
-  isAnswered: boolean;
-  isHighlighted: boolean;
-  // likes: Record<string, {
-  //   authorId: string;
-  // }>
-}>
-
-type Question = {
-  id: string;
-  author: {
-    name: string;
-    avatar: string;
-  }
-  content: string;
-  isAnswered: boolean;
-  isHighlighted: boolean;
-}
-
 export function Room() {
   const routeParams = useParams<RoomRouteParams>();
   const { user } = useAuth();
+  const { roomTitle, questions } = useRoom(routeParams.id);
   const [newQuestion, setNewQuestion] = useState('');
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [roomTitle, setRoomTitle] = useState('');
-
-  useEffect(() => {
-    const roomRef = database.ref(`rooms/${routeParams.id}`);
-
-    roomRef.once('value', room => {
-      const databaseRoom = room.val();
-      const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {};
-
-      const parsedQuestions = Object.entries(firebaseQuestions).map(([key, value]) => {
-        return {
-          id: key,
-          content: value.content,
-          author: value.author,
-          isHighlighted: value.isHighlighted,
-          isAnswered: value.isAnswered,
-          // likeCount: Object.values(value.likes ?? {}).length,
-          // likeId: Object.entries(value.likes ?? {}).find(([key, like]) => like.authorId === user?.id)?.[0],
-        }
-      });
-
-      setRoomTitle(databaseRoom.title);
-      setQuestions(parsedQuestions);
-
-    });
-  }, [routeParams.id]);
 
   async function sendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -91,6 +43,18 @@ export function Room() {
     await database.ref(`rooms/${routeParams.id}/questions`).push(question);
 
     setNewQuestion('');
+  }
+
+  async function likeQuestion(questionId: string, likeId: string | undefined) {
+    if (likeId) {
+      await database.ref(`rooms/${routeParams.id}/questions/${questionId}/likes/${likeId}`).remove();
+
+      return;
+    }
+
+    await database.ref(`rooms/${routeParams.id}/questions/${questionId}/likes`).push({
+      authorId: user?.uid,
+    });
   }
 
   return (
@@ -128,7 +92,7 @@ export function Room() {
           </div>
         </form>
 
-        {/* <div className="question-list">
+        <div className="question-list">
           {questions.map(question => {
             return (
               <Question
@@ -143,7 +107,7 @@ export function Room() {
                     className={`like-button ${question.likeId ? 'liked' : ''}`}
                     type="button"
                     aria-label="Marcar como gostei"
-                    onClick={() => handleLikeQuestion(question.id, question.likeId)}
+                    onClick={() => likeQuestion(question.id, question.likeId)}
                   >
                     { question.likeCount > 0 && <span>{question.likeCount}</span> }
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -154,7 +118,7 @@ export function Room() {
               </Question>
             );
           })}
-        </div> */}
+        </div>
       </main>
     </div>
   )
